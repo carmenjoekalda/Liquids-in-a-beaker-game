@@ -34,6 +34,10 @@ def draw_button(text, pos, color):
 # draw the buttons and return their rectangles
 button_rects = [draw_button(label, pos, button_color) for pos, label in buttons]
 
+# load the background image and blit it onto the screen
+background_image = pygame.image.load('background.png').convert()
+screen.blit(background_image, (0, 0))
+
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -52,8 +56,6 @@ while True:
                         # quit button clicked
                         pygame.quit()
                         quit()
-
-    screen.fill((0, 0, 0))
 
     # draw the buttons and check for hover
     for i, (pos, label) in enumerate(buttons):
