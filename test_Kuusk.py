@@ -38,8 +38,10 @@ button_rects = [draw_button(label, pos, button_color) for pos, label in buttons]
 background_image = pygame.image.load('background.png').convert()
 screen.blit(background_image, (0, 0))
 
-# boolean to check if start button was clicked
+# boolean to check if start button was clicked or the customize button was clicked
 start_button_clicked = False
+customize_button_clicked = False
+
 
 while True:
     for event in pygame.event.get():
@@ -54,19 +56,22 @@ while True:
                         start_button_clicked = True
                     elif i == 1:
                         # customize button clicked
-                        pass
+                        customize_button_clicked = True
                     elif i == 2:
                         # quit button clicked
                         pygame.quit()
                         quit()
 
-    # clear the screen and draw the buttons
+   # clear the screen and draw the buttons
     screen.blit(background_image, (0, 0))
     for i, (pos, label) in enumerate(buttons):
         if button_rects:
             rect = button_rects[i]
             if rect.collidepoint(pygame.mouse.get_pos()):
-                draw_button(label, pos, button_hover_color)
+                if i == 1: # hover on customize button
+                    draw_button(label, pos, button_hover_color)
+                else:
+                    draw_button(label, pos, button_color)
             else:
                 draw_button(label, pos, button_color)
 
@@ -77,5 +82,21 @@ while True:
         text_rect = text_surf.get_rect(center=(width/2, height/2))
         screen.blit(text_surf, text_rect)
         button_rects = []  # clear the button rectangles
+    
+    # if customize button was clicked, show "This is where you would customize" text and hide the buttons
+    if customize_button_clicked:
+        screen.fill((0, 0, 0))
+        text_surf = button_font.render("This is where you would customize", True, (255, 255, 255))
+        text_rect = text_surf.get_rect(center=(width/2, height/2))
+        screen.blit(text_surf, text_rect)
+        button_rects = []  # clear the button rectangles
 
+    # if customize button was clicked, show "This is where you would customize" text and hide the buttons
+    if customize_button_clicked:
+        screen.fill((0, 0, 0))
+        text_surf = button_font.render("This is where you would customize", True, (255, 255, 255))
+        text_rect = text_surf.get_rect(center=(width/2, height/2))
+        screen.blit(text_surf, text_rect)
+        button_rects = []  # clear the button rectangles
+    
     pygame.display.update()
