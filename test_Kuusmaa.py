@@ -20,6 +20,23 @@ class Player:
             
 #pipes
 
+  
+# GLOBAL VARIABLES
+COLOR = (255, 100, 98)
+SURFACE_COLOR = (167, 255, 100)
+WIDTH = 500
+HEIGHT = 500
+  
+# Object class
+COLOR = (255, 100, 98)
+SURFACE_COLOR = (167, 255, 100)
+WIDTH = 500
+HEIGHT = 500
+  
+
+# Object class
+
+
 
 
 player = Player(100, 500)
@@ -49,7 +66,7 @@ while True:
 
     print(pygame.mouse.get_pos())
     #death
-    if player.x > 3900 and player.x < 490 and player.y > 490 :
+    if player.x > 390 and player.x < 490 and player.y > 490 :
         player.x = 100
         player.y = 400
 

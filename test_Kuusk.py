@@ -1,6 +1,9 @@
 import pygame
 pygame.init()
 
+#clock meaning
+clock = pygame.time.Clock()
+
 # window size
 width = 1600
 height = 900
@@ -38,8 +41,8 @@ button_rects = [draw_button(label, pos, button_color) for pos, label in buttons]
 background_image = pygame.image.load('background.png').convert()
 screen.blit(background_image, (0, 0))
 
-# boolean to check if start button was clicked
-start_button_clicked = False
+# boolean to check if start button or customize button was clicked
+button_clicked = False
 
 while True:
     for event in pygame.event.get():
@@ -51,10 +54,28 @@ while True:
                 if rect.collidepoint(event.pos):
                     if i == 0:
                         # start button clicked
-                        start_button_clicked = True
+                        button_clicked = True
                     elif i == 1:
                         # customize button clicked
-                        pass
+                        button_clicked = True
+                        # clear the screen and draw the back button
+                        screen.fill((0, 0, 0))
+                        back_surf = button_font.render("Back", True, (255, 255, 255))
+                        back_rect = back_surf.get_rect(topleft=(20, 20))
+                        screen.blit(back_surf, back_rect)
+                        pygame.display.flip()
+                        while True:
+                            for event in pygame.event.get():
+                                if event.type == pygame.QUIT:
+                                    pygame.quit()
+                                    quit()
+                                elif event.type == pygame.MOUSEBUTTONDOWN:
+                                    if back_rect.collidepoint(event.pos):
+                                        button_clicked = False
+                            if not button_clicked:
+                                break
+                            clock.tick(60)
+
                     elif i == 2:
                         # quit button clicked
                         pygame.quit()
@@ -70,12 +91,25 @@ while True:
             else:
                 draw_button(label, pos, button_color)
 
-    # if start button was clicked, show "Top tier gameplay" text and hide the buttons
-    if start_button_clicked:
+    # if start or customize button was clicked, show the appropriate screen
+    if button_clicked:
         screen.fill((0, 0, 0))
-        text_surf = button_font.render("Top tier gameplay", True, (255, 255, 255))
-        text_rect = text_surf.get_rect(center=(width/2, height/2))
-        screen.blit(text_surf, text_rect)
-        button_rects = []  # clear the button rectangles
+        if i == 0:  # start button clicked
+            text_surf = button_font.render("Top tier gameplay", True, (255, 255, 255))
+            text_rect = text_surf.get_rect(center=(width/2, height/2))
+            screen.blit(text_surf, text_rect)
+        elif i == 1:  # customize button clicked
+            text_surf = button_font.render("This is where you would customize", True, (255, 255, 255))
+            text_rect = text_surf.get_rect(center=(width/2, height/2))
+            screen.blit(text_surf, text_rect)
 
-    pygame.display.update()
+        # draw the back button
+        back_surf = button_font.render("Back", True, (255, 255, 255))
+        back_rect = back_surf.get_rect(topleft=(20, 20))
+        screen.blit(back_surf, back_rect)
+
+        button_rects = []  # clear the button rectangles
+        pygame.display.flip()
+
+    pygame.display.flip()
+    clock.tick(60)
