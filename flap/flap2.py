@@ -11,7 +11,7 @@ width = 1920
 height = 1080
 screen = pygame.display.set_mode([width, height])
 pygame.display.set_caption('BEAKER GAME')
-font = pygame.font.Font('freesansbold.ttf', 28)
+font = pygame.font.Font('freesansbold.ttf', 70)
 fps = 60
 timer = pygame.time.Clock()
 speed = 2.5
@@ -173,7 +173,11 @@ def draw():
     screen.blit(background, ( 0,0))
     coins.draw(screen)
     coins.update()
-    #print(pygame.mouse.get_pos())
+
+    screen.blit(pygame.transform.scale(pygame.image.load('coin.png'), (75, 75)), ( 1850, 980))
+    coin_text = font.render(str(coin_amount), True, 'black')
+    screen.blit(coin_text, (1800, 980))
+    print(pygame.mouse.get_pos())
 def hit():
     global beaker_colors
     global coin_amount
@@ -187,6 +191,7 @@ def hit():
             coins.remove(i)
             coin_amount += 1
             print(coin_amount)
+
 
 # main game loop
 run = True
@@ -243,8 +248,7 @@ while run:
     if win:
         victory_text = font.render('You Won! Press Enter for a new board!', True, 'white')
         screen.blit(victory_text, (30, 265))
-    restart_text = font.render('Stuck? Space-Restart, Enter-New Board!', True, 'white')
-    screen.blit(restart_text, (10, 10))
+
 
     # display all drawn items on screen, exit pygame if run == False
     pygame.display.flip()
