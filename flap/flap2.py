@@ -15,6 +15,7 @@ font = pygame.font.Font('freesansbold.ttf', 28)
 fps = 60
 timer = pygame.time.Clock()
 speed = 2.5
+coin_amount = 0
 
 color_choices = ['red', 'orange', 'light blue', 'dark blue', 'dark green', 'pink', 'purple', 'dark gray',
                  'brown', 'light green', 'yellow', 'white', 'red', 'orange', 'light blue', 'dark blue', 'dark green', 'pink', 'purple', 'dark gray',
@@ -30,6 +31,23 @@ beaker_rects = []
 select_rect = 100
 win = False
 
+class Coin(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        self.image = pygame.transform.scale(pygame.image.load('coin.png'), (50, 50))
+        self.rect = self.image.get_rect()
+        self.rect.center = [x, y]
+        self.x = x
+        self.y = y
+        self.hitbox = pygame.Rect(x - 25, y - 25, 50, 50)
+    def update(self):
+
+        pygame.draw.rect(screen, ('red'), self.hitbox, 2)
+
+coins = pygame.sprite.Group()
+coin1 = Coin(700, 100)
+coin2 = Coin(300, 100)
+coins.add(coin1, coin2)
 
 class Player:
     def __init__(self, picture_path, x, y):
@@ -153,14 +171,23 @@ def check_victory(colors):
 
 def draw():
     screen.blit(background, ( 0,0))
-
+    coins.draw(screen)
+    coins.update()
+    #print(pygame.mouse.get_pos())
 def hit():
     global beaker_colors
+    global coin_amount
     for i in beakers_boxes:
         if pygame.Rect.colliderect(player.hitbox, i):
             beaker_colors = copy.deepcopy(initial_colors)
             player.x = 0
             player.y = 100
+    for i in coins:
+        if pygame.Rect.colliderect(player.hitbox, i.hitbox):
+            coins.remove(i)
+            coin_amount += 1
+            print(coin_amount)
+
 # main game loop
 run = True
 while run:
