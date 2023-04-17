@@ -5,17 +5,64 @@ import pygame
 pygame.init()
 
 
-
+Shop_coin = 0
 coin_amount = 0
+
+width = 1920
+height = 1080
+screen = pygame.display.set_mode([width, height])
+pygame.display.set_caption('GAME')
+font = pygame.font.Font('freesansbold.ttf', 70)
+character_selected = 'character.jpg'
+
+class Player:
+    def __init__(self, picture_path, x, y):
+        super().__init__()
+        image = pygame.image.load(picture_path)
+        self.image = pygame.transform.scale(image, (200, 200))
+        self.x = x
+        self.y = y
+        self.hitbox = pygame.Rect(self.x + 60, self.y + 70, 60, 60)
+
+    def draw(self):
+        screen.blit(self.image, (self.x, self.y))
+        pygame.draw.rect(screen, ('red'), self.hitbox, 2)
+        self.hitbox = pygame.Rect(self.x + 60, self.y + 70, 60, 60)
+
+
+class Button(pygame.sprite.Sprite):
+    def __init__(self, text, x, y, bought):
+        super().__init__()
+        self.text = text
+        self.x = x
+        self.y = y
+        self.bought = bought
+        self.draw()
+
+    def draw(self):
+
+        button_text = font.render(self.text, True, 'Black')
+        buttonrect = pygame.rect.Rect((self.x, self.y), (200, 100))
+        pygame.draw.rect(screen, 'gray', buttonrect, 0, 5)
+        pygame.draw.rect(screen, 'black', buttonrect, 2, 5)
+        screen.blit(button_text, (self.x + 10, self.y + 10))
+
+    def click(self):
+        mouse_pos = pygame.mouse.get_pos()
+        click = pygame.mouse.get_pressed()[0]
+        buttonrect = pygame.rect.Rect((self.x, self.y), (200, 100))
+        if click and buttonrect.collidepoint(mouse_pos) and self.bought:
+            return True
+
+        else:
+            return False
+
+        player = Player('character.jpg', 0, 100)
+
 def Game():
     while True:
         beakers_boxes = []
-        # create game variables
-        width = 1920
-        height = 1080
-        screen = pygame.display.set_mode([width, height])
-        pygame.display.set_caption('BEAKER GAME')
-        font = pygame.font.Font('freesansbold.ttf', 70)
+        player = Player(character_selected, 0, 100)
         fps = 60
         timer = pygame.time.Clock()
         speed = 2.5
@@ -53,19 +100,7 @@ def Game():
         coin2 = Coin(300, 100)
         coins.add(coin1, coin2)
 
-        class Player:
-            def __init__(self, picture_path, x, y):
-                super().__init__()
-                image = pygame.image.load(picture_path)
-                self.image = pygame.transform.scale(image, (200, 200))
-                self.x = x
-                self.y = y
-                self.hitbox = pygame.Rect(self.x + 60, self.y + 70, 60, 60)
-            def draw(self):
-                screen.blit(self.image, (self.x, self.y))
-                pygame.draw.rect(screen, ('red'), self.hitbox, 2)
-                self.hitbox = pygame.Rect(self.x + 60, self.y + 70, 60, 60)
-        player = Player('tempflap.png', 0, 100)
+
         yaxis = True
         def movement():
             keypress = pygame.key.get_pressed()
@@ -181,7 +216,7 @@ def Game():
             screen.blit(pygame.transform.scale(pygame.image.load('coin.png'), (75, 75)), ( 1850, 980))
             coin_text = font.render(str(coin_amount), True, 'black')
             screen.blit(coin_text, (1800, 980))
-            print(pygame.mouse.get_pos())
+
         def hit():
             global beaker_colors
             global coin_amount
@@ -227,11 +262,11 @@ def Game():
 
 
                 if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        Main_menu()
                     if event.key == pygame.K_SPACE:
                         pygame.time.set_timer(pygame.USEREVENT, 100)
                         yaxis = False
-                    if event.key == pygame.K_ESCAPE:
-                        Main_menu()
                 if event.type == pygame.USEREVENT:
                     yaxis = True
 
@@ -262,44 +297,20 @@ def Game():
 
             # display all drawn items on screen, exit pygame if run == False
             pygame.display.flip()
-
 def Main_menu():
     while True:
-        width = 1920
-        height = 1080
-        screen = pygame.display.set_mode([width, height])
-        pygame.display.set_caption('BEAKER GAME')
-        font = pygame.font.Font('freesansbold.ttf', 70)
-        fps = 60
 
-        class Button(pygame.sprite.Sprite):
-            def __init__(self, text, x, y):
-                super().__init__()
-                self.text = text
-                self.x = x
-                self.y = y
-                self.draw()
 
-            def draw(self):
-                button_text = font.render(self.text, True, 'Black')
-                buttonrect = pygame.rect.Rect((self.x, self.y), (200, 100))
-                pygame.draw.rect(screen,'gray', buttonrect, 0, 5)
-                pygame.draw.rect(screen, 'black', buttonrect, 2, 5)
-                screen.blit(button_text, (self.x + 10, self.y + 10))
-            def click(self):
-                mouse_pos = pygame.mouse.get_pos()
-                click = pygame.mouse.get_pressed()[0]
-                buttonrect = pygame.rect.Rect((self.x, self.y), (200, 100))
-                if click and buttonrect.collidepoint(mouse_pos):
-                    return True
-                else:
-                    return False
+
+
 
 
         while True:
             screen.blit(pygame.image.load('background.png'), (0, 0))
-            start_button = Button('Start', 100, 100)
-            quit_button = Button('quit', 100, 300)
+            #buttons
+            start_button = Button('Start', 100, 100, True)
+            shop_button = Button('shop', 100, 200, True)
+            quit_button = Button('quit', 100, 300, True)
 
             for event in pygame.event.get():
 
@@ -308,8 +319,54 @@ def Main_menu():
                 #buttons
                 if start_button.click():
                     Game()
+                if shop_button.click():
+                    Shop()
                 if quit_button.click():
                     pygame.quit()
             pygame.display.flip()
+def Shop():
+    while True:
+
+        while True:
+            global character_selected
+            char1pic = pygame.transform.scale(pygame.image.load('character.jpg'), (300, 300))
+            char2pic = pygame.transform.scale(pygame.image.load('character2.jpg'), (300, 300))
+            char3pic = pygame.transform.scale(pygame.image.load('character3.jpg'), (300, 300))
+            character2_bought = True
+            character3_bought = True
+
+            screen.blit(pygame.image.load('background.png'), (0,0))
+
+            #
+            character1_button = Button('select', 100, 600, True)
+
+            if character2_bought == False:
+                character2_button = Button('5', 800, 600, False)
+            elif character2_bought == True:
+                character2_button = Button('select', 800, 600, True)
+            if character3_bought == False:
+                character3_button = Button('10', 1500, 600, False)
+            elif character3_bought == True:
+                character3_button = Button('select', 1500, 600, True)
+            screen.blit(char1pic, (100, 300))
+            screen.blit(char2pic, (800, 300))
+            screen.blit(char3pic, (1500, 300))
+
+        #selecting
+            if character1_button.click():
+                character_selected = 'character.jpg'
+            if character2_button.click():
+                character_selected = 'character2.jpg'
+            if character3_button.click():
+                character_selected = 'character3.jpg'
+
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        Main_menu()
+                pygame.display.flip()
 Main_menu()
 pygame.quit()
