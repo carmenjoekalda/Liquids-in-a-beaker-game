@@ -61,15 +61,18 @@ class Button(pygame.sprite.Sprite):
 
         player = Player('character.jpg', 0, 100)
 def Victory_menu():
+    global coin_amount
+    coin_text = font.render(str(coin_amount), True, 'black')
     while True:
 
         celebration = pygame.transform.scale(pygame.image.load('celebration.png'), (1920, 1080))
         screen.blit(celebration, (0,0))
         victory_text = font.render('congratiolations!  +', True, 'black')
         screen.blit(victory_text, (300, 225))
-        coin_text = font.render(str(coin_amount), True, 'black')
+
         screen.blit(coin_text, (1000, 225))
         screen.blit(pygame.transform.scale(pygame.image.load('coin.png'), (75, 75)), (1050, 225))
+        coin_amount = 0
         new_game_button = Button('New Game?', 400, 300, (500,100))
         shop_button = Button('shop', 400, 400, (500, 100))
 
@@ -127,7 +130,7 @@ def Game():
 
                 new_coin = Coin(random.randint(100, 1800), random.randint(100, 600))
                 coin_group.add(new_coin)
-                print(len(coin_group))
+
         coins()
 
 
@@ -333,6 +336,7 @@ def Game():
             # draw victory text when winning, show restart on the top
             if win:
                 Shop_coin += coin_amount
+
                 Victory_menu()
 
 
