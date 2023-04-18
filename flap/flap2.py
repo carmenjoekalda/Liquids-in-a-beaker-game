@@ -31,12 +31,12 @@ class Player:
 
 
 class Button(pygame.sprite.Sprite):
-    def __init__(self, text, x, y, bought):
+    def __init__(self, text, x, y):
         super().__init__()
         self.text = text
         self.x = x
         self.y = y
-        self.bought = bought
+
         self.draw()
 
     def draw(self):
@@ -51,7 +51,7 @@ class Button(pygame.sprite.Sprite):
         mouse_pos = pygame.mouse.get_pos()
         click = pygame.mouse.get_pressed()[0]
         buttonrect = pygame.rect.Rect((self.x, self.y), (200, 100))
-        if click and buttonrect.collidepoint(mouse_pos) and self.bought:
+        if click and buttonrect.collidepoint(mouse_pos):
             return True
 
         else:
@@ -132,8 +132,7 @@ def Game():
                     color = random.choice(available_colors)
                     beakers_colors[i].append(color)
                     available_colors.remove(color)
-            print(beakers_colors)
-            print(beakers_number)
+
             return beakers_number, beakers_colors
 
 
@@ -189,7 +188,7 @@ def Game():
                         if len(colors[selected_rect]) > 0:
                             colors[destination].append(color_on_top)
                             colors[selected_rect].pop(-1)
-            print(colors, length)
+
             return colors
 
 
@@ -229,7 +228,7 @@ def Game():
                 if pygame.Rect.colliderect(player.hitbox, i.hitbox):
                     coins.remove(i)
                     coin_amount += 1
-                    print(coin_amount)
+
 
 
         # main game loop
@@ -308,9 +307,9 @@ def Main_menu():
         while True:
             screen.blit(pygame.image.load('background.png'), (0, 0))
             #buttons
-            start_button = Button('Start', 100, 100, True)
-            shop_button = Button('shop', 100, 200, True)
-            quit_button = Button('quit', 100, 300, True)
+            start_button = Button('Start', 100, 100)
+            shop_button = Button('shop', 100, 200)
+            quit_button = Button('quit', 100, 300)
 
             for event in pygame.event.get():
 
@@ -324,30 +323,40 @@ def Main_menu():
                 if quit_button.click():
                     pygame.quit()
             pygame.display.flip()
+character2_bought = False
+character3_bought = False
 def Shop():
     while True:
 
         while True:
             global character_selected
+            global Shop_coin
             char1pic = pygame.transform.scale(pygame.image.load('character.jpg'), (300, 300))
             char2pic = pygame.transform.scale(pygame.image.load('character2.jpg'), (300, 300))
             char3pic = pygame.transform.scale(pygame.image.load('character3.jpg'), (300, 300))
-            character2_bought = True
-            character3_bought = True
+            global character2_bought
+            global character3_bought
 
             screen.blit(pygame.image.load('background.png'), (0,0))
 
+            screen.blit(pygame.transform.scale(pygame.image.load('coin.png'), (75, 75)), (1850, 980))
+
+
+            coin_text = font.render(str(Shop_coin), True, 'black')
+            screen.blit(coin_text, (1800, 980))
             #
-            character1_button = Button('select', 100, 600, True)
+            character1_button = Button('select', 100, 600)
 
             if character2_bought == False:
-                character2_button = Button('5', 800, 600, False)
+                character2_button = Button('5', 800, 600,)
+                screen.blit(pygame.transform.scale(pygame.image.load('coin.png'), (75, 75)), (860, 610))
             elif character2_bought == True:
-                character2_button = Button('select', 800, 600, True)
+                character2_button = Button('select', 800, 600)
             if character3_bought == False:
-                character3_button = Button('10', 1500, 600, False)
+                character3_button = Button('10', 1500, 600)
+                screen.blit(pygame.transform.scale(pygame.image.load('coin.png'), (75, 75)), (1600, 610))
             elif character3_bought == True:
-                character3_button = Button('select', 1500, 600, True)
+                character3_button = Button('select', 1500, 600)
             screen.blit(char1pic, (100, 300))
             screen.blit(char2pic, (800, 300))
             screen.blit(char3pic, (1500, 300))
@@ -355,11 +364,21 @@ def Shop():
         #selecting
             if character1_button.click():
                 character_selected = 'character.jpg'
-            if character2_button.click():
-                character_selected = 'character2.jpg'
-            if character3_button.click():
-                character_selected = 'character3.jpg'
 
+            if character2_button.click() and character2_bought:
+                character_selected = 'character2.jpg'
+            elif character2_button.click() and character2_bought == False:
+                if Shop_coin >= 5:
+                    character2_bought = True
+                    Shop_coin -= 5
+                    character_selected = 'character2.jpg'
+            if character3_button.click() and character3_bought:
+                character_selected = 'character3.jpg'
+            elif character3_button.click() and character3_bought == False:
+                if Shop_coin >= 10:
+                    character3_bought = True
+                    Shop_coin -= 10
+                    character_selected = 'character3.jpg'
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -367,6 +386,9 @@ def Shop():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         Main_menu()
+                    if event.key == pygame.K_p:
+                        Shop_coin += 1
+
                 pygame.display.flip()
 Main_menu()
 pygame.quit()
