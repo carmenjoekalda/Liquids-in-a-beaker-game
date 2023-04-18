@@ -31,18 +31,20 @@ class Player:
 
 
 class Button(pygame.sprite.Sprite):
-    def __init__(self, text, x, y):
+    def __init__(self, text, x, y, button_size):
         super().__init__()
         self.text = text
         self.x = x
         self.y = y
-
+        self.button_size = button_size
+        if self.button_size == 1:
+            self.button_size = (200, 100)
         self.draw()
 
     def draw(self):
 
         button_text = font.render(self.text, True, 'Black')
-        buttonrect = pygame.rect.Rect((self.x, self.y), (200, 100))
+        buttonrect = pygame.rect.Rect((self.x, self.y), self.button_size)
         pygame.draw.rect(screen, 'gray', buttonrect, 0, 5)
         pygame.draw.rect(screen, 'black', buttonrect, 2, 5)
         screen.blit(button_text, (self.x + 10, self.y + 10))
@@ -58,9 +60,30 @@ class Button(pygame.sprite.Sprite):
             return False
 
         player = Player('character.jpg', 0, 100)
+def Victory_menu():
+    while True:
 
+        celebration = pygame.transform.scale(pygame.image.load('celebration.png'), (1920, 1080))
+        screen.blit(celebration, (0,0))
+        victory_text = font.render('congratiolations!  +', True, 'black')
+        screen.blit(victory_text, (300, 225))
+        coin_text = font.render(str(coin_amount), True, 'black')
+        screen.blit(coin_text, (1000, 225))
+        screen.blit(pygame.transform.scale(pygame.image.load('coin.png'), (75, 75)), (1050, 225))
+        new_game_button = Button('New Game?', 400, 300, (500,100))
+        shop_button = Button('shop', 400, 400, (500, 100))
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            if new_game_button.click():
+                Game()
+            if shop_button.click():
+                Shop()
+            pygame.display.flip()
 def Game():
     while True:
+        global Shop_coin
         beakers_boxes = []
         player = Player(character_selected, 0, 100)
         fps = 60
@@ -69,7 +92,7 @@ def Game():
 
 
         color_choices = ['red', 'orange', 'light blue', 'dark blue', 'dark green', 'pink', 'purple', 'dark gray',
-                         'brown', 'light green', 'yellow', 'white', 'red', 'orange', 'light blue', 'dark blue', 'dark green', 'pink', 'purple', 'dark gray',
+                          'light green', 'yellow', 'white', 'red', 'orange', 'light blue', 'dark blue', 'dark green', 'pink', 'purple', 'dark gray',
                          'brown', 'light green', 'yellow', 'white']
         beaker_colors = []
         initial_colors = []
@@ -266,6 +289,8 @@ def Game():
                     if event.key == pygame.K_SPACE:
                         pygame.time.set_timer(pygame.USEREVENT, 100)
                         yaxis = False
+                    if event.key == pygame.K_y:
+                        win = True
                 if event.type == pygame.USEREVENT:
                     yaxis = True
 
@@ -290,26 +315,19 @@ def Game():
 
             # draw victory text when winning, show restart on the top
             if win:
-                victory_text = font.render('You Won! Press Enter for a new board!', True, 'white')
-                screen.blit(victory_text, (30, 265))
+                Shop_coin += coin_amount
+                Victory_menu()
 
 
             # display all drawn items on screen, exit pygame if run == False
             pygame.display.flip()
 def Main_menu():
-    while True:
-
-
-
-
-
-
         while True:
             screen.blit(pygame.image.load('background.png'), (0, 0))
             #buttons
-            start_button = Button('Start', 100, 100)
-            shop_button = Button('shop', 100, 200)
-            quit_button = Button('quit', 100, 300)
+            start_button = Button('Start', 100, 100, 1)
+            shop_button = Button('shop', 100, 200, 1)
+            quit_button = Button('quit', 100, 300, 1)
 
             for event in pygame.event.get():
 
@@ -345,18 +363,18 @@ def Shop():
             coin_text = font.render(str(Shop_coin), True, 'black')
             screen.blit(coin_text, (1800, 980))
             #
-            character1_button = Button('select', 100, 600)
+            character1_button = Button('select', 100, 600, 1)
 
             if character2_bought == False:
-                character2_button = Button('5', 800, 600,)
+                character2_button = Button('5', 800, 600, 1)
                 screen.blit(pygame.transform.scale(pygame.image.load('coin.png'), (75, 75)), (860, 610))
             elif character2_bought == True:
-                character2_button = Button('select', 800, 600)
+                character2_button = Button('select', 800, 600, 1)
             if character3_bought == False:
-                character3_button = Button('10', 1500, 600)
+                character3_button = Button('10', 1500, 600, 1)
                 screen.blit(pygame.transform.scale(pygame.image.load('coin.png'), (75, 75)), (1600, 610))
             elif character3_bought == True:
-                character3_button = Button('select', 1500, 600)
+                character3_button = Button('select', 1500, 600, 1)
             screen.blit(char1pic, (100, 300))
             screen.blit(char2pic, (800, 300))
             screen.blit(char3pic, (1500, 300))
