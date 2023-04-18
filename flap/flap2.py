@@ -83,6 +83,7 @@ def Victory_menu():
             pygame.display.flip()
 def Game():
     while True:
+        global coin_amount
         global Shop_coin
         beakers_boxes = []
         player = Player(character_selected, 0, 100)
@@ -121,8 +122,10 @@ def Game():
         coins = pygame.sprite.Group()
         coin1 = Coin(700, 100)
         coin2 = Coin(300, 100)
-        coins.add(coin1, coin2)
 
+        def default_coins():
+            coins.add(coin1, coin2)
+        default_coins()
 
         yaxis = True
         def movement():
@@ -245,6 +248,8 @@ def Game():
             for i in beakers_boxes:
                 if pygame.Rect.colliderect(player.hitbox, i):
                     beaker_colors = copy.deepcopy(initial_colors)
+                    default_coins()
+                    coin_amount = 0
                     player.x = 0
                     player.y = 100
             for i in coins:
@@ -285,6 +290,7 @@ def Game():
 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
+                        coin_amount = 0
                         Main_menu()
                     if event.key == pygame.K_SPACE:
                         pygame.time.set_timer(pygame.USEREVENT, 100)
@@ -349,6 +355,7 @@ def Shop():
         while True:
             global character_selected
             global Shop_coin
+
             char1pic = pygame.transform.scale(pygame.image.load('character.jpg'), (300, 300))
             char2pic = pygame.transform.scale(pygame.image.load('character2.jpg'), (300, 300))
             char3pic = pygame.transform.scale(pygame.image.load('character3.jpg'), (300, 300))
