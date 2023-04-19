@@ -19,15 +19,15 @@ class Player:
     def __init__(self, picture_path, x, y):
         super().__init__()
         image = pygame.image.load(picture_path)
-        self.image = pygame.transform.scale(image, (200, 200))
+        self.image = pygame.transform.scale(image, (100, 100))
         self.x = x
         self.y = y
-        self.hitbox = pygame.Rect(self.x + 60, self.y + 70, 60, 60)
+        self.hitbox = pygame.Rect(self.x + 15, self.y + 20, 60, 60)
 
     def draw(self):
         screen.blit(self.image, (self.x, self.y))
-        pygame.draw.rect(screen, ('red'), self.hitbox, 2)
-        self.hitbox = pygame.Rect(self.x + 60, self.y + 70, 60, 60)
+        #pygame.draw.rect(screen, ('red'), self.hitbox, 2)
+        self.hitbox = pygame.Rect(self.x + 15, self.y + 20, 60, 60)
 
 
 class Button(pygame.sprite.Sprite):
@@ -64,17 +64,16 @@ def Victory_menu():
     global coin_amount
     coin_text = font.render(str(coin_amount), True, 'black')
     while True:
-
         celebration = pygame.transform.scale(pygame.image.load('celebration.png'), (1920, 1080))
         screen.blit(celebration, (0,0))
-        victory_text = font.render('congratiolations!  +', True, 'black')
-        screen.blit(victory_text, (300, 225))
+        victory_text = font.render('CONGRATULATIONS!  +', True, 'black')
+        screen.blit(victory_text, (660, 225))
 
-        screen.blit(coin_text, (1000, 225))
-        screen.blit(pygame.transform.scale(pygame.image.load('coin.png'), (75, 75)), (1050, 225))
+        screen.blit(coin_text, (1500, 225))
+        screen.blit(pygame.transform.scale(pygame.image.load('coin.png'), (75, 75)), (1550, 220))
         coin_amount = 0
-        new_game_button = Button('New Game?', 400, 300, (500,100))
-        shop_button = Button('shop', 400, 400, (500, 100))
+        new_game_button = Button('NEW GAME?', 800, 300, (500,100))
+        shop_button = Button('SHOP', 800, 400, (500, 100))
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -136,8 +135,8 @@ def Game():
                 self.y = y
                 self.hitbox = pygame.Rect(x - 25, y - 25, 50, 50)
             def update(self):
-
-                pygame.draw.rect(screen, ('red'), self.hitbox, 2)
+                pass
+                #pygame.draw.rect(screen, ('red'), self.hitbox, 2)
 
         coin_group = pygame.sprite.Group()
         amount_of_coins_on_screen = 10
@@ -385,10 +384,10 @@ def Shop():
             global character_selected
             global Shop_coin
 
-            char1pic = pygame.transform.scale(pygame.image.load('character.jpg'), (300, 300))
-            char2pic = pygame.transform.scale(pygame.image.load('character2.jpg'), (300, 300))
-            char3pic = pygame.transform.scale(pygame.image.load('character3.jpg'), (300, 300))
-            char4pic = pygame.transform.scale(pygame.image.load('character4.jpg'), (300, 300))
+            char1pic = pygame.transform.scale(pygame.image.load('character.jpg'), (200, 200))
+            char2pic = pygame.transform.scale(pygame.image.load('character2.jpg'), (200, 200))
+            char3pic = pygame.transform.scale(pygame.image.load('character3.jpg'), (200, 200))
+            char4pic = pygame.transform.scale(pygame.image.load('character4.jpg'), (200, 200))
             global character2_bought
             global character3_bought
             global character4_bought
@@ -419,10 +418,10 @@ def Shop():
             elif character4_bought == True:
                 character4_button = Button('select', 1000, 160, 1)
 
-            screen.blit(char1pic, (100, 300))
-            screen.blit(char2pic, (800, 300))
-            screen.blit(char3pic, (1500, 300))
-            screen.blit(char4pic, (700, 75))
+            screen.blit(char1pic, (100, 400))
+            screen.blit(char2pic, (800, 400))
+            screen.blit(char3pic, (1500, 400))
+            screen.blit(char4pic, (800, 75))
         #selecting'
         
             if character1_button.click():
