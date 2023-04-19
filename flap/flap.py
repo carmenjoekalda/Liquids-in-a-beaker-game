@@ -52,7 +52,7 @@ class Button(pygame.sprite.Sprite):
     def click(self):
         mouse_pos = pygame.mouse.get_pos()
         click = pygame.mouse.get_pressed()[0]
-        buttonrect = pygame.rect.Rect((self.x, self.y), (200, 100))
+        buttonrect = pygame.rect.Rect((self.x, self.y), (self.button_size))
         if click and buttonrect.collidepoint(mouse_pos):
             return True
 
@@ -72,7 +72,7 @@ def Victory_menu():
         screen.blit(coin_text, (1500, 225))
         screen.blit(pygame.transform.scale(pygame.image.load('coin.png'), (75, 75)), (1550, 220))
         coin_amount = 0
-        new_game_button = Button('NEW GAME?', 800, 300, (500,100))
+        new_game_button = Button('NEW GAME!?', 800, 300, (500,100))
         shop_button = Button('SHOP', 800, 400, (500, 100))
 
         for event in pygame.event.get():
@@ -88,7 +88,7 @@ def death_screen():
         
         game_over_img = pygame.transform.scale(pygame.image.load('new_game_over.jpg'), (1920, 1080))
         screen.blit(game_over_img, (0, 0))
-        new_game_button = Button('New Game?', 700, 800, (500,100))
+        new_game_button = Button('New Game!?', 700, 800, (500,100))
         shop_button = Button('shop', 700, 900, (500, 100))
         
         for event in pygame.event.get():
@@ -380,7 +380,7 @@ def Shop():
     while True:
 
         while True:
-            print(pygame.mouse.get_pos)
+            
             global character_selected
             global Shop_coin
 
@@ -399,6 +399,7 @@ def Shop():
             coin_text = font.render(str(Shop_coin), True, 'black')
             screen.blit(coin_text, (1800, 980))
             #
+            play_button = Button('play?', 0, 975, (500,100))
             character1_button = Button('select', 100, 600, 1)
 
             if character2_bought == False:
@@ -423,7 +424,8 @@ def Shop():
             screen.blit(char3pic, (1500, 400))
             screen.blit(char4pic, (800, 75))
         #selecting'
-        
+            if play_button.click():
+                Game()
             if character1_button.click():
                 character_selected = 'character.jpg'
 
